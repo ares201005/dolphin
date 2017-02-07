@@ -1,8 +1,29 @@
 #include "DolphinApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
-#include "ModulesApp.h"
 #include "MooseSyntax.h"
+#include "ModulesApp.h"
+
+// Kernels
+#include "Potential.h"
+#include "EqPotential.h"
+#include "Concentration.h"
+#include "ConcTimeDerivative.h"
+
+// BCs
+#include "ConductionOutflow.h"
+
+// postprocessor
+#include "SideFluxIntegralNp.h"
+// Materials
+#include "PackedColumn.h"
+
+// AuxKernels
+#include "Flux.h"
+#include "TotalConc.h"
+
+// functions
+#include "RectFunction.h"
 
 template<>
 InputParameters validParams<DolphinApp>()
@@ -40,6 +61,18 @@ extern "C" void DolphinApp__registerObjects(Factory & factory) { DolphinApp::reg
 void
 DolphinApp::registerObjects(Factory & factory)
 {
+  registerKernel(Potential);
+  registerKernel(EqPotential);
+  registerKernel(Concentration);
+  registerKernel(ConcTimeDerivative);
+
+  registerAux(Flux);
+  registerAux(TotalConc);
+  registerBoundaryCondition(ConductionOutflow);
+  registerBoundaryCondition(SideFluxIntegralNp);
+
+  registerFunction(RectFunction);
+
 }
 
 // External entry point for dynamic syntax association
