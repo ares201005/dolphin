@@ -82,5 +82,6 @@ Concentration::computeQpOffDiagJacobian(unsigned int jvar)
   //  RealVectorValue tmp_grad2 = _u[_qp] * _grad_phi[_j][_qp];
   //  return _coefficient * (tmp_grad1 + tmp_grad2) * _grad_test[_i][_qp];
   //}
-  return 0.0;
+  else
+   return 0.0;
 }
