@@ -10,16 +10,28 @@
 #include "Concentration.h"
 #include "ConcTimeDerivative.h"
 
+// ns kernels
+#include "ConvectionVel.h"
+#include "INSMomentumForceLaplaceForm.h"
+#include "INSMomentumForceLaplaceFormRZ.h"
+#include "INSMomentumForceTractionForm.h"
+#include "INSMomentumForceTractionFormRZ.h"
+
+
 // BCs
 #include "ConductionOutflow.h"
+#include "ConductionOutflowNs.h"
 
 // postprocessor
 #include "SideFluxIntegralNp.h"
+#include "SideFluxIntegralNs.h"
+
 // Materials
 #include "PackedColumn.h"
 
 // AuxKernels
 #include "Flux.h"
+#include "FluxNs.h"
 #include "TotalConc.h"
 
 // functions
@@ -66,10 +78,24 @@ DolphinApp::registerObjects(Factory & factory)
   registerKernel(Concentration);
   registerKernel(ConcTimeDerivative);
 
+  registerKernel(INSMomentumForceLaplaceForm);
+  registerKernel(INSMomentumForceLaplaceFormRZ);
+
+  registerKernel(INSMomentumForceTractionForm);
+  registerKernel(INSMomentumForceTractionFormRZ);
+
+  registerKernel(ConvectionVel);
+
   registerAux(Flux);
+  registerAux(FluxNs);
+
   registerAux(TotalConc);
+
   registerBoundaryCondition(ConductionOutflow);
+  registerBoundaryCondition(ConductionOutflowNs);
+
   registerBoundaryCondition(SideFluxIntegralNp);
+  registerBoundaryCondition(SideFluxIntegralNs);
 
   registerFunction(RectFunction);
 
