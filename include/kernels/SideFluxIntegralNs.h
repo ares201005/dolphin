@@ -12,51 +12,43 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef FLUX_H
-#define FLUX_H
+#ifndef SIDEFLUXINTEGRALNS_H
+#define SIDEFLUXINTEGRALNS_H
 
-#include "AuxKernel.h"
+// MOOSE includes
+#include "SideIntegralVariablePostprocessor.h"
 
-//Forward Declarations
-class Flux;
+// Forward Declarations
+class SideFluxIntegralNs;
 
 template<>
-InputParameters validParams<Flux>();
+InputParameters validParams<SideFluxIntegralNs>();
 
 /**
- * Constant auxiliary value
+ * This postprocessor computes a side integral of the mass flux.
  */
-class Flux : public AuxKernel
+class SideFluxIntegralNs : public SideIntegralVariablePostprocessor
 {
 public:
-  Flux(const InputParameters & parameters);
-
-  //virtual ~Flux() {}
+  SideFluxIntegralNs(const InputParameters & parameters);
 
 protected:
-  /**
-   * AuxKernels MUST override computeValue.  computeValue() is called on
-   * every quadrature point.  For Nodal Auxiliary variables those quadrature
-   * points coincide with the nodes.
-   */
-  virtual Real computeValue();
+  virtual Real computeQpIntegral();
 
-  /// Will hold 0,1,2 for x,y,z
-  int _component;
-
-  /// The gradient of a coupled variable
   const VariableGradient & _potential_gradient;
   const VariableGradient & _eqpotential_gradient;
-  const VariableGradient & _con_gradient;
-  const VariableValue & _con;
   const VariableValue & _eqpotential_value;
 
-  Real _bulkconc;
   Real _coefficient;
+  Real _bulkconc;
   RealVectorValue _gradchem;
 
-  
-  /// Holds the permeability and viscosity from the material system
+  Real _over_diff;
+
+  // Coupled variables
+  const VariableValue & _u_vel;
+  const VariableValue & _v_vel;
+  const VariableValue & _w_vel;
 };
 
-#endif //FLUX_H
+#endif // SIDEFLUXINTEGRAL_H

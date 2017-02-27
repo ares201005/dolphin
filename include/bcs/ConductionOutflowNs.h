@@ -12,16 +12,16 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef CONDUCTIONOUTFLOW_H
-#define CONDUCTIONOUTFLOW_H
+#ifndef HEATCONDUCTIONOUTFLOWNS_H
+#define HEATCONDUCTIONOUTFLOWNS_H
 
 #include "IntegratedBC.h"
 
 
-class ConductionOutflow;
+class ConductionOutflowNs;
 
 template<>
-InputParameters validParams<ConductionOutflow>();
+InputParameters validParams<ConductionOutflowNs>();
 
 /**
  * An IntegratedBC representing the "No BC" boundary condition for Heat Conduction.
@@ -30,10 +30,11 @@ InputParameters validParams<ConductionOutflow>();
  * This is a well accepted practice for truncating longer domains for convection/diffusion
  * problems as analyzed in: Griffiths, David F. "The ‘no boundary condition’outflow boundary condition." International journal for numerical methods in fluids 24.4 (1997): 393-411.
  */
-class ConductionOutflow : public IntegratedBC
+class ConductionOutflowNs : public IntegratedBC
 {
 public:
-  ConductionOutflow(const InputParameters & parameters);
+  ConductionOutflowNs(const InputParameters & parameters);
+
 
 protected:
   /// This is called to integrate the residual across the boundary
@@ -48,12 +49,24 @@ protected:
   const VariableGradient & _eqpotential_gradient;
   const VariableValue & _eqpotential_value;
 
-  const Real & _bulkconc;
-  const Real & _coefficient;
-  const RealVectorValue & _gradchem;
+  Real _bulkconc;
+  Real _coefficient;
+  RealVectorValue _gradchem;
 
+  Real _over_diff;
+
+  // Coupled variables
+  const VariableValue & _u_vel;
+  const VariableValue & _v_vel;
+  const VariableValue & _w_vel;
+
+  // Variable numberings
   unsigned int _potential_var;
+
+  unsigned _u_vel_var_number;
+  unsigned _v_vel_var_number;
+  unsigned _w_vel_var_number;
 };
 
 
-#endif //CONDUCTIONOUTFLOW_H
+#endif //HEATCONDUCTIONOUTFLOWNS_H

@@ -30,7 +30,9 @@ InputParameters validParams<Flux>()
 
   // Add a "coupling paramater" to get a variable from the input file.
   params.addRequiredCoupledVar("potential",     "The poential field.");
+  params.addRequiredCoupledVar("eqpotential", "The variable representing the pressure.");
   params.addRequiredCoupledVar("concentration", "The concentration profile");
+  params.addRequiredParam<Real>("bulkconc", "The coefficient");
   params.addRequiredParam<Real>("coefficient", "The coefficient");
   params.addRequiredParam<RealVectorValue>("gradchem", "gradient of chemical potential");
 
@@ -45,8 +47,13 @@ Flux::Flux(const InputParameters & parameters) :
 
     // Get the gradient of the variable
     _potential_gradient(coupledGradient("potential")),
+    _eqpotential_gradient(coupledGradient("eqpotential")),
     _con_gradient(coupledGradient("concentration")),
+
     _con(coupledValue("concentration")),
+    _eqpotential_value(coupledValue("eqpotential")),
+
+    _bulkconc(getParam<Real>("bulkconc")),
     _coefficient(getParam<Real>("coefficient")),
     _gradchem(getParam<RealVectorValue>("gradchem"))
 
@@ -60,6 +67,9 @@ Flux::computeValue()
   // Then pull out the "component" of it we are looking for (x, y or z)
   // Note that getting a particular component of a gradient is done using the
   // parenthesis operator
-  return _con_gradient[_qp](_component)+_coefficient*_con[_qp]*_potential_gradient[_qp](_component);
+  // Diff=
+  return (_con_gradient[_qp](_component)+
+          _coefficient*_con[_qp]*(_potential_gradient[_qp](_component)+_eqpotential_gradient[_qp](_component)) +
+          _coefficient*_bulkconc*std::exp(-_coefficient*_eqpotential_value[_qp])*_potential_gradient[_qp](_component))*192.9448;
   // not finished
 }

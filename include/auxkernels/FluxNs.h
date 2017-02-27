@@ -12,26 +12,26 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef FLUX_H
-#define FLUX_H
+#ifndef FLUXNS_H
+#define FLUXNS_H
 
 #include "AuxKernel.h"
 
 //Forward Declarations
-class Flux;
+class FluxNs;
 
 template<>
-InputParameters validParams<Flux>();
+InputParameters validParams<FluxNs>();
 
 /**
  * Constant auxiliary value
  */
-class Flux : public AuxKernel
+class FluxNs : public AuxKernel
 {
 public:
-  Flux(const InputParameters & parameters);
+  FluxNs(const InputParameters & parameters);
 
-  //virtual ~Flux() {}
+  virtual ~FluxNs() {}
 
 protected:
   /**
@@ -48,15 +48,22 @@ protected:
   const VariableGradient & _potential_gradient;
   const VariableGradient & _eqpotential_gradient;
   const VariableGradient & _con_gradient;
+
   const VariableValue & _con;
   const VariableValue & _eqpotential_value;
 
   Real _bulkconc;
   Real _coefficient;
   RealVectorValue _gradchem;
+  Real _over_diff;
+
+  // Coupled variables
+  const VariableValue & _u_vel;
+  const VariableValue & _v_vel;
+  const VariableValue & _w_vel;
 
   
   /// Holds the permeability and viscosity from the material system
 };
 
-#endif //FLUX_H
+#endif //DARCYVELOCITY_H
