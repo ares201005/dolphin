@@ -21,8 +21,8 @@ InputParameters validParams<ConductionOutflow>()
 
   params.addRequiredCoupledVar("potential", "The variable representing the pressure.");
   params.addRequiredCoupledVar("eqpotential", "The variable representing the pressure.");
-  params.addRequiredParam<Real>("coefficient", "The coefficient");
   params.addRequiredParam<Real>("bulkconc", "The bulk concentration");
+  params.addRequiredParam<Real>("coefficient", "The coefficient");
   params.addRequiredParam<RealVectorValue>("gradchem", "gradient of chemical potential");
 
   return params;
@@ -30,14 +30,16 @@ InputParameters validParams<ConductionOutflow>()
 
 ConductionOutflow::ConductionOutflow(const InputParameters & parameters) :
   IntegratedBC(parameters),
-
   _potential_gradient(coupledGradient("potential")),
   _eqpotential_gradient(coupledGradient("eqpotential")),
   _eqpotential_value(coupledValue("eqpotential")),
-  _coefficient(getParam<Real>("coefficient")),
+
   _bulkconc(getParam<Real>("bulkconc")),
-  _gradchem(getParam<RealVectorValue>("gradchem"))
+  _coefficient(getParam<Real>("coefficient")),
+  _gradchem(getParam<RealVectorValue>("gradchem")),
   // IntegratedBCs can retrieve material properties!
+
+  _potential_var(coupled("potential"))
 {}
 
 Real
@@ -63,5 +65,6 @@ ConductionOutflow::computeQpOffDiagJacobian(unsigned int jvar)
   {
     return -_test[_i][_qp]*_coefficient*(_u[_qp]+_bulkconc*std::exp(-_coefficient*_eqpotential_value[_qp]))*_grad_phi[_j][_qp]*_normals[_qp];
   }
-  return 0.0;
+  else
+    return 0.0;
 }
