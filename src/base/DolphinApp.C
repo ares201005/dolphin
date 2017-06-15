@@ -17,6 +17,7 @@
 #include "INSMomentumForceTractionForm.h"
 #include "INSMomentumForceTractionFormRZ.h"
 
+#include "InterfaceDiffusion.h"
 
 // BCs
 #include "ConductionOutflow.h"
@@ -36,6 +37,8 @@
 
 // functions
 #include "RectFunction.h"
+#include "RectFunctionExp.h"
+#include "RectFunctionExp2.h"
 
 template<>
 InputParameters validParams<DolphinApp>()
@@ -91,6 +94,9 @@ DolphinApp::registerObjects(Factory & factory)
 
   registerAux(TotalConc);
 
+  // Interface kernels
+  registerInterfaceKernel(InterfaceDiffusion);
+
   registerBoundaryCondition(ConductionOutflow);
   registerBoundaryCondition(ConductionOutflowNs);
 
@@ -98,6 +104,8 @@ DolphinApp::registerObjects(Factory & factory)
   registerBoundaryCondition(SideFluxIntegralNs);
 
   registerFunction(RectFunction);
+  registerFunction(RectFunctionExp);
+  registerFunction(RectFunctionExp2);
 
 }
 
