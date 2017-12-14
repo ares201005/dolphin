@@ -54,6 +54,7 @@ protected:
   unsigned int _concentration_var;
 
   Real _dielectric;
+  Real _charge;
   /**
    * These references will be set by the initialization list so that
    * values can be pulled from the Material system.

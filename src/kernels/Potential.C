@@ -26,6 +26,7 @@ InputParameters validParams<Potential>()
   // permeability and viscosity from the Material
   // so we just return params...
   params.addRequiredParam<Real>("dielectric", "The dielectric constant");
+  params.addRequiredParam<Real>("charge", "The charge");
 
   return params;
 }
@@ -40,7 +41,8 @@ Potential::Potential(const InputParameters & parameters) :
     // This returns a MaterialProperty<Real> reference that we store
     // in the class and then index into in computeQpResidual/Jacobian....
   //  _permeability(getMaterialProperty<Real>("permeability"))
-    _dielectric(getParam<Real>("dielectric"))
+    _dielectric(getParam<Real>("dielectric")),
+    _charge(getParam<Real>("charge"))
 {
 }
 
@@ -49,7 +51,7 @@ Potential::computeQpResidual()
 {
   // Use the MaterialProperty references we stored earlier
  // return -_permeability[_qp] * _concentration_value[_qp]*_test[_i][_qp];
-  return -_dielectric * _concentration_value[_qp]*_test[_i][_qp];
+  return -_charge*_dielectric * _concentration_value[_qp]*_test[_i][_qp];
 }
 
 Real
@@ -65,7 +67,7 @@ Potential::computeQpOffDiagJacobian(unsigned int jvar)
   if (jvar == _concentration_var)
   {
    // return -_permeability[_qp] * _phi[_j][_qp]*_test[_i][_qp];
-    return -_dielectric * _phi[_j][_qp]*_test[_i][_qp];
+    return -_charge*_dielectric * _phi[_j][_qp]*_test[_i][_qp];
   }
   return 0.0;
 }
